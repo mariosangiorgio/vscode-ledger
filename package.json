@@ -2,6 +2,7 @@
     "name": "ledger",
     "displayName": "ledger",
     "description": "Ledger language support for Visual Studio Code",
+    "repository": "https://github.com/mariosangiorgio/vscode-ledger","license": "MIT",    
     "version": "1.0.1",
     "publisher": "mariosangiorgio",
     "engines": {

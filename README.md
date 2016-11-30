@@ -1,7 +1,6 @@
 # ledger
 
 Adds support for [Ledger](http://www.ledger-cli.org) files.
-Source code is available on [GitHub](https://github.com/mariosangiorgio/vscode-ledger)
 
 ## Features
 
