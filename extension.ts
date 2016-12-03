@@ -12,6 +12,8 @@ function validate(document: vscode.TextDocument){
 
 export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
-        validate(document);
+        if(document.languageId == "ledger"){
+            validate(document);
+        }
     }));
 }
