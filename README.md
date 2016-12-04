@@ -11,7 +11,8 @@ Requires `ledger` to be in the path.
 
 ## Release Notes
 ### 1.0.3
-Ensured that the extension triggers only for ledger files
+ * Ensured that the extension triggers only for ledger files
+ * Started using language server
 ### 1.0.2
 Initial implementation of file validation and reporting of malformed documents.
 ### 1.0.1
