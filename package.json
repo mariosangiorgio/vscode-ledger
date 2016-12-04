@@ -12,6 +12,12 @@
     "license": "MIT",    
     "version": "1.0.4",
     "publisher": "mariosangiorgio",
+    "contributors": [
+        {
+        "name": "Mario Sangiorgio",
+        "url": "https://twitter.com/mariosangiorgio"
+        }
+    ],
     "engines": {
         "vscode": "^1.5.0"
     },
