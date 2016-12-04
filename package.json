@@ -10,7 +10,7 @@
         "url": "https://github.com/mariosangiorgio/vscode-ledger/issues"
     },
     "license": "MIT",    
-    "version": "1.0.3",
+    "version": "1.0.4",
     "publisher": "mariosangiorgio",
     "engines": {
         "vscode": "^1.5.0"

@@ -1,3 +1,5 @@
+### 1.0.4
+Account auto-completion
 ### 1.0.3
  * Ensured that the extension triggers only for ledger files
  * Started using language server
