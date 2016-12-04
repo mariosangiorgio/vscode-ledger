@@ -35,7 +35,9 @@
         "onLanguage:ledger"
     ],
     "dependencies": {
-        "ledger-cli": "^0.2.0"
+        "vscode-languageclient": "^2.6.3",
+		"vscode-languageserver": "^2.6.2",
+		"ledger-cli": "^0.2.0" 
     },
 	"main": "./out/extension",
     "scripts": {
