@@ -19,24 +19,6 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
 });
 
 let documents: TextDocuments = new TextDocuments();
-documents.onDidChangeContent((change) =>{
-    connection.console.info("Content changed")
-    connection.console.info(change.document.getText())
-    //TODO: ditch ledger-cli so issues can be reported in real time
-    let diagnostics: Diagnostic[] = [];
-    /*
-    diagnostics.push({
-        severity: DiagnosticSeverity.Error,
-        range: {
-            start: { line: 0, character: 0 },
-            end: { line: 10, character: 10 }
-        },                
-        message: err,
-        source: 'ledger'
-    });
-    connection.sendDiagnostics({ uri: change.document.uri, diagnostics });
-    */
-})
 
 documents.onDidOpen(params => {
     let ledger = new Ledger({ file: decodeURI(url.parse(params.document.uri).path) });
