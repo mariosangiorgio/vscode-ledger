@@ -4,34 +4,74 @@ import {CompletionItem, CompletionItemKind, TextDocumentPositionParams} from 'vs
 import {Ledger} from 'ledger-cli';
 import * as url from 'url';
 
-let accounts : string[] = [];
+let binary: string;
+let accounts : Set<string> = new Set<string>([]);
+let payees : Set<string> = new Set<string>([]);
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
+interface LedgerSettings{
+    binary: string
+}
+interface Settings {
+    ledger: LedgerSettings;
+}
+
+connection.onDidChangeConfiguration((change) => {
+    let settings = <Settings>change.settings;
+    binary = settings.ledger.binary || "/usr/local/bin/ledger";
+});
+
 connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-    return accounts.map((account, index) => {
-        return {
+    let result = []
+    accounts.forEach((account, index) => {
+        result.push({
             label: account,
             kind: CompletionItemKind.Text,
             data: index
-        }
+        })
     })
+    payees.forEach((payee, index) => {
+        result.push({
+            label: payee,
+            kind: CompletionItemKind.Text,
+            data: index
+        })
+    })
+    return result
 });
 
 let documents: TextDocuments = new TextDocuments();
 
-documents.onDidOpen(params => {
-    let ledger = new Ledger({ file: decodeURI(url.parse(params.document.uri).path) });
-    ledger.accounts().on('data', account => accounts.push(account))
-})
+function pathToFile(document){
+    return decodeURI(url.parse(document.uri).path)
+}
 
-documents.onDidSave((change) => {
-    let ledger = new Ledger({ file: decodeURI(url.parse(change.document.uri).path) });
+function refresh(file){
+    let ledger = new Ledger({ binary: binary, file: file });
     ledger.stats((err, stat) => {
         if(err){
             connection.window.showErrorMessage(err)  
         }
+        else{
+            // two passes. .once('error', error =>{}) doesn't seem to be ever called
+            ledger.register()
+                    .on('data', entry => {
+                        payees.add(entry.payee)
+                        entry.postings.map(posting => accounts.add(posting.account))
+                    })
+        }
     });
+}
+
+documents.onDidOpen(params => {
+    let file = pathToFile(params.document)
+    refresh(file)
+})
+
+documents.onDidSave((change) => {
+    let file = pathToFile(change.document)
+    refresh(file)
 });
 
 documents.listen(connection);

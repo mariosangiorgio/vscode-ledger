@@ -44,7 +44,18 @@
                 "scopeName": "source.ledger",
                 "path": "./syntaxes/ledger.tmLanguage"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Ledger",
+            "properties": {
+                "ledger.binary": {
+                    "type": "string",
+                    "default": "/usr/local/bin/ledger",
+                    "description": "The full path to the ledger executable"
+                }
+            }
+        }
     },
     "activationEvents": [
         "onLanguage:ledger"

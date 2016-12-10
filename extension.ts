@@ -13,7 +13,7 @@ export function activate(context: ExtensionContext) {
 	let clientOptions: LanguageClientOptions = {
 		documentSelector: ['ledger'],
 		synchronize: {
-			//TODO: pass configuration if needed configurationSection: 'languageServerExample',
+			configurationSection: 'ledger',
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
 		}
 	}
