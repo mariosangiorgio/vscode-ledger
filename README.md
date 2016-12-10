@@ -9,4 +9,4 @@ Adds support for [Ledger](http://www.ledger-cli.org) files.
 * Reporting of malformed ledger files on save.
 
 ## Dependencies
-Requires `ledger` to be in `/usr/local/bin/ledger` unless another path is specified in the configuration via the `ledger.binary` key.
+Requires `ledger` to be in `/usr/local/bin/ledger` unless another path is specified in the Visual Studio Code configuration via the `ledger.binary` key.
