@@ -1,4 +1,4 @@
-### 1.0.5
+### 1.0.6
 * Autocompletion for both accounts and payees
 * Made path to the ledger binary file configurable
 
