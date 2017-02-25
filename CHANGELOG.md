@@ -1,3 +1,6 @@
+### 1.0.7
+Prevented spurios errors from appearing in the diff view
+
 ### 1.0.6
 * Autocompletion for both accounts and payees
 * Made path to the ledger binary file configurable
