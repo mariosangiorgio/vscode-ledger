@@ -65,8 +65,16 @@ function refresh(file){
 }
 
 documents.onDidOpen(params => {
-    let file = pathToFile(params.document)
-    refresh(file)
+    // Sometimes we don't have real files
+    // An example is git diffs. They compare an actual file
+    // with an in memory representation of the latest committed
+    // file. They have an inmemory:// uri schema.
+    // The ledger binary can only point to actual files so the best
+    // we can do here is to skip validation for the old version
+    if(params.document.uri.startsWith("file://")){
+        let file = pathToFile(params.document)
+        refresh(file)
+    }
 })
 
 documents.onDidSave((change) => {
