@@ -1,3 +1,7 @@
+### 1.0.8
+Made completion a bit smarter. It now detects what kind of line it's being requested on.
+This makes it possible to return either payees or accounts depending on the context.
+
 ### 1.0.7
 Prevented spurios errors from appearing in the diff view
 

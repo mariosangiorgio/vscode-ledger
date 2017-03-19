@@ -22,7 +22,24 @@ connection.onDidChangeConfiguration((change) => {
     binary = settings.ledger.binary || "/usr/local/bin/ledger";
 });
 
-connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+// Returns the line of the document that contains the specified position
+function getFullLine(document, position): string {
+    let nextLinePosition = {character: 0, line: position.line + 1};
+    let lineOffset = document.offsetAt(position) - position.character;
+    let nextLineOffset = document.offsetAt(nextLinePosition);
+    return document.getText().substring(lineOffset, nextLineOffset);
+}
+
+// Heuristic to decide whether we're dealing with the fist
+// line of a transaction (it starts with a date) or with
+// the lines including the amount associated to a given account.
+// It expects the user to have already inserted the date before
+// invoking auto-completion.
+function isTransactionHeader(line: string) : Boolean {
+    return /^\d+/.test(line.trim())
+}
+
+function generateAccountCompletions(){
     let result = []
     accounts.forEach((account, index) => {
         result.push({
@@ -31,6 +48,11 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
             data: index
         })
     })
+    return result;
+}
+
+function generatePayeeCompletions(){
+    let result = []
     payees.forEach((payee, index) => {
         result.push({
             label: payee,
@@ -38,7 +60,14 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
             data: index
         })
     })
-    return result
+    return result;
+}
+
+connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+    let document = documents.get(textDocumentPosition.textDocument.uri);
+    let position = textDocumentPosition.position;
+    let currentLine = getFullLine(document, position);
+    return isTransactionHeader(currentLine) ? generatePayeeCompletions() : generateAccountCompletions();
 });
 
 let documents: TextDocuments = new TextDocuments();
@@ -51,7 +80,7 @@ function refresh(file){
     let ledger = new Ledger({ binary: binary, file: file });
     ledger.stats((err, stat) => {
         if(err){
-            connection.window.showErrorMessage(err)  
+            connection.window.showErrorMessage(err)
         }
         else{
             // two passes. .once('error', error =>{}) doesn't seem to be ever called
