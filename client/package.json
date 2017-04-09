@@ -1,0 +1,79 @@
+{
+    "name": "ledger",
+    "displayName": "ledger",
+    "description": "Ledger language support for Visual Studio Code",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mariosangiorgio/vscode-ledger.git"
+    },
+    "bugs": {
+        "url": "https://github.com/mariosangiorgio/vscode-ledger/issues"
+    },
+    "license": "MIT",
+    "version": "1.0.8",
+    "publisher": "mariosangiorgio",
+    "contributors": [
+        {
+            "name": "Mario Sangiorgio",
+            "url": "https://twitter.com/mariosangiorgio"
+        }
+    ],
+    "engines": {
+        "vscode": "^1.8.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "ledger",
+                "aliases": [
+                    "Ledger",
+                    "ledger"
+                ],
+                "extensions": [
+                    ".ledger"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ledger",
+                "scopeName": "source.ledger",
+                "path": "./syntaxes/ledger.tmLanguage"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Ledger",
+            "properties": {
+                "ledger.binary": {
+                    "type": "string",
+                    "default": "/usr/local/bin/ledger",
+                    "description": "The full path to the ledger executable"
+                }
+            }
+        }
+    },
+    "activationEvents": [
+        "onLanguage:ledger"
+    ],
+    "dependencies": {
+        "vscode-languageclient": "^3.2.0"
+    },
+    "main": "./out/extension",
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}

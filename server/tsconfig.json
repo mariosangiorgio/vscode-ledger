@@ -1,8 +1,9 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
-        "outDir": "out",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"target": "es6",
+		"outDir": "../client/server",
         "lib": [
             "es6"
         ],
@@ -10,7 +11,6 @@
         "rootDir": "."
     },
     "exclude": [
-        "node_modules",
-        ".vscode-test"
+        "node_modules"
     ]
 }
