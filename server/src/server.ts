@@ -3,10 +3,10 @@ import {IPCMessageReader, IPCMessageWriter, createConnection, IConnection, TextD
 import {CompletionItem, CompletionItemKind, TextDocumentPositionParams} from 'vscode-languageserver';
 import {Ledger} from 'ledger-cli';
 import * as url from 'url';
+import {CompletionOracle} from './autocomplete';
 
 let binary: string;
-let accounts : Set<string> = new Set<string>([]);
-let payees : Set<string> = new Set<string>([]);
+let completionOracle: CompletionOracle;
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
@@ -30,44 +30,20 @@ function getFullLine(document, position): string {
     return document.getText().substring(lineOffset, nextLineOffset);
 }
 
-// Heuristic to decide whether we're dealing with the fist
-// line of a transaction (it starts with a date) or with
-// the lines including the amount associated to a given account.
-// It expects the user to have already inserted the date before
-// invoking auto-completion.
-function isTransactionHeader(line: string) : Boolean {
-    return /^\d+/.test(line.trim())
-}
-
-function generateAccountCompletions(){
-    let result = []
-    accounts.forEach((account, index) => {
+connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+    let document = documents.get(textDocumentPosition.textDocument.uri);
+    let position = textDocumentPosition.position;
+    let currentLine = getFullLine(document, position);
+    let completions =  completionOracle.complete(currentLine);
+    let result = [];
+    completions.forEach((account, index) => {
         result.push({
             label: account,
             kind: CompletionItemKind.Text,
             data: index
         })
-    })
+    });
     return result;
-}
-
-function generatePayeeCompletions(){
-    let result = []
-    payees.forEach((payee, index) => {
-        result.push({
-            label: payee,
-            kind: CompletionItemKind.Text,
-            data: index
-        })
-    })
-    return result;
-}
-
-connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-    let document = documents.get(textDocumentPosition.textDocument.uri);
-    let position = textDocumentPosition.position;
-    let currentLine = getFullLine(document, position);
-    return isTransactionHeader(currentLine) ? generatePayeeCompletions() : generateAccountCompletions();
 });
 
 let documents: TextDocuments = new TextDocuments();
@@ -78,6 +54,8 @@ function pathToFile(document){
 
 function refresh(file){
     let ledger = new Ledger({ binary: binary, file: file });
+    let payees = new Set<string>();
+    let accounts = new Set<string>();
     ledger.stats((err, stat) => {
         if(err){
             connection.window.showErrorMessage(err)
@@ -89,6 +67,7 @@ function refresh(file){
                         payees.add(entry.payee)
                         entry.postings.map(posting => accounts.add(posting.account))
                     })
+                    .on('end', () => completionOracle = new CompletionOracle(accounts, payees))
         }
     });
 }
