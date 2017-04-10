@@ -4,7 +4,7 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 import * as path from 'path';
 
 export function activate(context: ExtensionContext) {
-	let serverModule = context.asAbsolutePath(path.join('server', 'server.js'));
+	let serverModule = context.asAbsolutePath(path.join('server', 'src', 'server.js'));
 	let debugOptions = { execArgv: ["--nolazy", "--debug=6004"] };
 	let serverOptions: ServerOptions = {
 		run : { module: serverModule, transport: TransportKind.ipc },
