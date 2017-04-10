@@ -68,11 +68,14 @@
         "typescript": "^2.0.3",
         "vscode": "^1.0.0",
         "mocha": "^2.3.3",
+        "chai": "^3.5.0",
         "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "@types/mocha": "^2.2.32",
+        "@types/chai": "^3.5.0"
     },
     "scripts": {
         "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
-        "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p ."
+        "watch": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc --watch -p .",
+        "test": "mocha -r ts-node/register src/**/*.test.ts"
     }
 }
