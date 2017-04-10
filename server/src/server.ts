@@ -6,7 +6,8 @@ import * as url from 'url';
 import {CompletionOracle} from './autocomplete';
 
 let binary: string;
-let completionOracle: CompletionOracle;
+// Default value for when the file hasn't been loaded yet
+let completionOracle = new CompletionOracle(new Set<string>(), new Set<string>());
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
