@@ -71,7 +71,8 @@
         "chai": "^3.5.0",
         "@types/node": "^6.0.40",
         "@types/mocha": "^2.2.32",
-        "@types/chai": "^3.5.0"
+        "@types/chai": "^3.5.0",
+        "ts-node": "^3.0.2"
     },
     "scripts": {
         "compile": "installServerIntoExtension ../client ./package.json ./tsconfig.json && tsc -p .",
