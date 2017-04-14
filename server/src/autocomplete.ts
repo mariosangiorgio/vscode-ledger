@@ -1,3 +1,7 @@
+export class Completion{
+  constructor(readonly label: string, readonly insertText: string){}
+}
+
 export class CompletionOracle {
   constructor(
     readonly accounts: Set<string>,
@@ -13,12 +17,16 @@ export class CompletionOracle {
       return /^\d+/.test(line.trim())
   }
 
-  complete(line: string) : string[]{
-    function toArray(strings: Set<string>) : string[]{
+  complete(line: string) : Completion[]{
+    function toArray(strings: Set<string>, prefix: number) : Completion[]{
       let result = []
-      strings.forEach(account => result.push(account));
+      strings.forEach(item =>
+        result.push(new Completion(item, item.substring(prefix))));
       return result;
     }
-    return this.isTransactionHeader(line) ? toArray(this.payees) : toArray(this.accounts)
+    //TODO: compute the lenght of the prefix that is already present
+    return this.isTransactionHeader(line)
+      ? toArray(this.payees, 0)
+      : toArray(this.accounts, 0)
   }
 }

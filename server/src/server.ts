@@ -37,9 +37,10 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
     let currentLine = getFullLine(document, position);
     let completions =  completionOracle.complete(currentLine);
     let result = [];
-    completions.forEach((account, index) => {
+    completions.forEach((completion, index) => {
         result.push({
-            label: account,
+            label: completion.label,
+            insertText: completion.insertText,
             kind: CompletionItemKind.Text,
             data: index
         })
