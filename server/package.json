@@ -62,7 +62,7 @@
     ],
     "dependencies": {
         "vscode-languageserver": "^3.2.0",
-        "ledger-cli": "git@github.com:mariosangiorgio/node-ledger.git#register-output"
+        "ledger-cli": "git://github.com/mariosangiorgio/node-ledger.git#register-output"
     },
     "devDependencies": {
         "typescript": "^2.0.3",
