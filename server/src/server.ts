@@ -1,9 +1,9 @@
 'use strict';
-import {IPCMessageReader, IPCMessageWriter, createConnection, IConnection, TextDocument, TextDocumentSyncKind, TextDocuments, Diagnostic, DiagnosticSeverity, InitializeParams, InitializeResult} from 'vscode-languageserver';
-import {CompletionItem, CompletionItemKind, TextDocumentPositionParams} from 'vscode-languageserver';
-import {Ledger} from 'ledger-cli';
-import * as url from 'url';
-import {CompletionOracle} from './autocomplete';
+import { IPCMessageReader, IPCMessageWriter, createConnection, IConnection, TextDocument, TextDocumentSyncKind, TextDocuments, Diagnostic, DiagnosticSeverity, InitializeParams, InitializeResult } from 'vscode-languageserver';
+import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from 'vscode-languageserver';
+import { Ledger } from 'ledger-cli';
+import Uri from 'vscode-uri'
+import { CompletionOracle } from './autocomplete';
 
 let binary: string;
 // Default value for when the file hasn't been loaded yet
@@ -11,7 +11,7 @@ let completionOracle = new CompletionOracle(new Set<string>(), new Set<string>()
 
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
-interface LedgerSettings{
+interface LedgerSettings {
     binary: string
 }
 interface Settings {
@@ -25,7 +25,7 @@ connection.onDidChangeConfiguration((change) => {
 
 // Returns the line of the document that contains the specified position
 function getFullLine(document, position): string {
-    let nextLinePosition = {character: 0, line: position.line + 1};
+    let nextLinePosition = { character: 0, line: position.line + 1 };
     let lineOffset = document.offsetAt(position) - position.character;
     let nextLineOffset = document.offsetAt(nextLinePosition);
     return document.getText().substring(lineOffset, nextLineOffset);
@@ -35,7 +35,7 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
     let document = documents.get(textDocumentPosition.textDocument.uri);
     let position = textDocumentPosition.position;
     let currentLine = getFullLine(document, position);
-    let completions =  completionOracle.complete(currentLine);
+    let completions = completionOracle.complete(currentLine);
     let result = [];
     completions.forEach((completion, index) => {
         result.push({
@@ -50,26 +50,26 @@ connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): Comp
 
 let documents: TextDocuments = new TextDocuments();
 
-function pathToFile(document){
-    return decodeURI(url.parse(document.uri).path)
+function pathToFile(document) {
+    return Uri.parse(document.uri).fsPath;
 }
 
-function refresh(file){
+function refresh(file) {
     let ledger = new Ledger({ binary: binary, file: file });
     let payees = new Set<string>();
     let accounts = new Set<string>();
     ledger.stats((err, stat) => {
-        if(err){
+        if (err) {
             connection.window.showErrorMessage(err)
         }
-        else{
+        else {
             // two passes. .once('error', error =>{}) doesn't seem to be ever called
             ledger.register()
-                    .on('data', entry => {
-                        payees.add(entry.payee)
-                        entry.postings.map(posting => accounts.add(posting.account))
-                    })
-                    .on('end', () => completionOracle = new CompletionOracle(accounts, payees))
+                .on('data', entry => {
+                    payees.add(entry.payee)
+                    entry.postings.map(posting => accounts.add(posting.account))
+                })
+                .on('end', () => completionOracle = new CompletionOracle(accounts, payees))
         }
     });
 }
@@ -81,7 +81,7 @@ documents.onDidOpen(params => {
     // file. They have an inmemory:// uri schema.
     // The ledger binary can only point to actual files so the best
     // we can do here is to skip validation for the old version
-    if(params.document.uri.startsWith("file://")){
+    if (params.document.uri.startsWith("file://")) {
         let file = pathToFile(params.document)
         refresh(file)
     }
@@ -95,8 +95,8 @@ documents.onDidSave((change) => {
 documents.listen(connection);
 
 connection.onInitialize((params): InitializeResult => {
-	return {
-		capabilities: {
+    return {
+        capabilities: {
             //TODO: evaluate if this should be done incrementally
             textDocumentSync: documents.syncKind,
             completionProvider: {
