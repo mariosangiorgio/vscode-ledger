@@ -1,3 +1,10 @@
+# IMPORTANT: I'm no longer actively working on this project
+I recently started using [beancount/fava](https://github.com/beancount/fava) instead of ledger and I'm probably not going to spend much time on this project.
+
+If you have improvements I'll try to merge and publish pull requests.
+If you're interested in maintaining the project please get in touch and we can figure out the best way to work together or to transfer it to you.
+
+# Content of this repository
 This repository contains both the code for the client and server side of the Visual Studio Code extension. Their directories contain the code and more details.
 
 # How to develop
